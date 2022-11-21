@@ -39,7 +39,7 @@ export default function Register() {
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           const user = userCredential.user;
-          writeUserData(user.uid, company, "user");
+          writeUserData(user.uid, company, "user", user.displayName || null);
           alert.success("Register Success");
         })
         .catch((error) => {

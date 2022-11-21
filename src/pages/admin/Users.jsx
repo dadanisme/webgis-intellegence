@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import Statistics from "../../components/user-admin/dashboard/Statistics";
 import UsersTable from "../../components/admin/users/UsersTable";
+import AdminsTable from "../../components/admin/users/AdminsTable";
 import Progress from "../../components/loading/Progress";
-
+import { getAdmins } from "../../firebase/utils";
 export default function Users() {
   const api = import.meta.env.VITE_API;
   const [data, setData] = useState([]);
+  const [admins, setAdmins] = useState([]);
 
   useEffect(() => {
     fetch(`${api}/users`)
@@ -16,6 +18,11 @@ export default function Users() {
         }
       })
       .catch((err) => console.log(err));
+
+    (async () => {
+      const admins = await getAdmins();
+      setAdmins(admins);
+    })();
   }, []);
 
   return (
@@ -25,7 +32,22 @@ export default function Users() {
       <div className="shadow-lg p-6 mt-8">
         <h1 className="font-semibold text-2xl mb-4">Users Table</h1>
         {data.length > 0 ? (
-          <UsersTable data={data} />
+          <UsersTable
+            data={data.filter(
+              (user) => !admins.map((admin) => admin.uid).includes(user.localId)
+            )}
+          />
+        ) : (
+          <div className="h-96">
+            <Progress />
+          </div>
+        )}
+      </div>
+
+      <div className="shadow-lg p-6 mt-8">
+        <h1 className="font-semibold text-2xl mb-4">Admins Table</h1>
+        {data.length > 0 ? (
+          <AdminsTable data={admins} />
         ) : (
           <div className="h-96">
             <Progress />
