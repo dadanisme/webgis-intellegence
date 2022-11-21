@@ -3,9 +3,10 @@ import { lazy, Suspense } from "react";
 import Loading from "../components/loading";
 
 // layouts
+const Authentication = lazy(() => import("../layouts/AuthLayout"));
 const AuthLayout = lazy(() => import("../layouts/AuthPage"));
-const UserSideBar = lazy(() => import("../layouts/User"));
-const AdminSideBar = lazy(() => import("../layouts/Admin"));
+const UserLayout = lazy(() => import("../layouts/User"));
+const AdminLayout = lazy(() => import("../layouts/Admin"));
 const Header = lazy(() => import("../layouts/Header"));
 
 // pages
@@ -29,19 +30,19 @@ export default function Router() {
     <BrowserRouter>
       <Suspense fallback={<Loading />}>
         <Routes>
-          <Route path="/auth" element={<AuthLayout />}>
-            <Route path="login" element={<Login />} />
-            <Route path="register" element={<Register />} />
-            <Route path="forgot-password" element={<ForgotPassword />} />
-          </Route>
-          <Route index element={<Home />} />
-          <Route path="/" element={<Header />}>
-            <Route path="/user" element={<UserSideBar />}>
+          <Route path="/" element={<Authentication />}>
+            <Route path="/auth" element={<AuthLayout />}>
+              <Route path="login" element={<Login />} />
+              <Route path="register" element={<Register />} />
+              <Route path="forgot-password" element={<ForgotPassword />} />
+            </Route>
+            <Route index element={<Home />} />
+            <Route path="/user" element={<UserLayout />}>
               <Route path="dashboard" element={<UserDashboard />} />
               <Route path="packages" element={<UserPackages />} />
               <Route path="shp" element={<UserShp />} />
             </Route>
-            <Route path="/admin" element={<AdminSideBar />}>
+            <Route path="/admin" element={<AdminLayout />}>
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="users" element={<AdminUsers />} />
               <Route path="packages" element={<AdminPackages />} />
@@ -51,7 +52,9 @@ export default function Router() {
               <Route path=":id" element={<SurveyForm />} />
             </Route>
           </Route>
+
           <Route path="/404" element={<NotFound />} />
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

@@ -1,7 +1,4 @@
-import person from "../../assets/images/person.svg";
-import logoDark from "../../assets/images/logo-dark.svg";
-import clsx from "clsx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   AiOutlineEye,
   AiOutlineEyeInvisible,
@@ -10,6 +7,14 @@ import {
 import { FcGoogle } from "react-icons/fc";
 import { BsFacebook } from "react-icons/bs";
 import { useState, useRef } from "react";
+import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
+import { setUser } from "../../store/slices/user";
+import { useDispatch } from "react-redux";
+import app from "../../firebase";
+import alert from "../../utils/alert";
+import person from "../../assets/images/person.svg";
+import logoDark from "../../assets/images/logo-dark.svg";
+import clsx from "clsx";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -18,6 +23,32 @@ export default function Login() {
 
   const togglePassword = () => setShowPassword(!showPassword);
   const resetInput = () => (formRef.current[0].value = "");
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    const email = formRef.current[0].value;
+    const password = formRef.current[1].value;
+
+    e.preventDefault();
+
+    const auth = getAuth(app);
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        dispatch(setUser(JSON.parse(JSON.stringify(user))));
+        alert.success("Login Success");
+        navigate("/");
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+
+        alert.error(errorMessage);
+        console.log(errorCode, errorMessage);
+      });
+  };
 
   return (
     <div className="flex items-center justify-center h-screen px-4 lg:px-16 gap-12">
@@ -50,7 +81,11 @@ export default function Login() {
               <img src={logoDark} alt="logo" className="w-[323px]" />
             </figure>
 
-            <form className="mt-8 flex flex-col gap-3" ref={formRef}>
+            <form
+              className="mt-8 flex flex-col gap-3"
+              ref={formRef}
+              onSubmit={handleSubmit}
+            >
               <div className="relative">
                 <input
                   className={clsx(
