@@ -4,7 +4,7 @@ import { FiLayers } from "react-icons/fi";
 import clsx from "clsx";
 export default function Statistics() {
   return (
-    <div className="w-full grid md:grid-cols-3 gap-2 mt-8">
+    <div className="w-full grid lg:grid-cols-3 gap-2">
       <StatisticsItem
         icon={<MdOutlineLocationOn />}
         text="POI"

@@ -5,11 +5,11 @@ import Statistics from "../../components/user-admin/dashboard/Statistics";
 
 export default function Dashboard() {
   return (
-    <div className="p-6">
+    <div className="p-6 grid gap-4">
       <Greeting />
       <SubscriptionStatus />
       <Statistics />
-      <div className="w-full h-96 mt-4">
+      <div className="w-full h-96">
         <Chart />
       </div>
     </div>
