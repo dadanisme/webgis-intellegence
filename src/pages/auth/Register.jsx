@@ -10,6 +10,10 @@ import {
 import { FcGoogle } from "react-icons/fc";
 import { BsFacebook } from "react-icons/bs";
 import { useState, useRef } from "react";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { writeUserData } from "../../firebase/utils";
+import app from "../../firebase";
+import alert from "../../utils/alert";
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
@@ -18,6 +22,33 @@ export default function Register() {
 
   const togglePassword = () => setShowPassword(!showPassword);
   const resetInput = () => (formRef.current[0].value = "");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const email = formRef.current[0].value;
+    const password = formRef.current[1].value;
+    const confirmPassword = formRef.current[2].value;
+    const company = formRef.current[3].value;
+
+    if (password !== confirmPassword) {
+      alert.error("Passwords do not match");
+      return;
+    } else {
+      const auth = getAuth(app);
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          writeUserData(user.uid, company, "user");
+          alert.success("Register Success");
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          alert.error(errorMessage);
+        });
+    }
+  };
 
   return (
     <div className="flex items-center justify-center h-screen px-4 lg:px-16 gap-12">
@@ -48,7 +79,11 @@ export default function Register() {
               <img src={logoDark} alt="logo" className="w-[323px]" />
             </figure>
 
-            <form className="mt-8 flex flex-col gap-3" ref={formRef}>
+            <form
+              className="mt-8 flex flex-col gap-3"
+              ref={formRef}
+              onSubmit={handleSubmit}
+            >
               <div className="relative">
                 <input
                   className={clsx(
@@ -77,17 +112,16 @@ export default function Register() {
                   type={showPassword ? "text" : "password"}
                   name="password"
                 />
-                <button
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#667085]"
+                <a
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#667085] cursor-pointer"
                   onClick={togglePassword}
-                  type="button"
                 >
                   {showPassword ? (
                     <AiOutlineEye className="text-2xl" />
                   ) : (
                     <AiOutlineEyeInvisible className="text-2xl" />
                   )}
-                </button>
+                </a>
               </div>
 
               <div className="relative">
@@ -101,17 +135,29 @@ export default function Register() {
                   type={showPassword ? "text" : "password"}
                   name="repassword"
                 />
-                <button
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#667085]"
+                <a
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#667085] cursor-pointer"
                   onClick={togglePassword}
-                  type="button"
                 >
                   {showPassword ? (
                     <AiOutlineEye className="text-2xl" />
                   ) : (
                     <AiOutlineEyeInvisible className="text-2xl" />
                   )}
-                </button>
+                </a>
+              </div>
+
+              <div className="relative">
+                <input
+                  className={clsx(
+                    "rounded-md px-4 py-2 w-full h-[60px]",
+                    "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
+                    "bg-[#EAF0F7]"
+                  )}
+                  placeholder="Company"
+                  type="text"
+                  name="company"
+                />
               </div>
 
               <p className="text-center text-[#C7C7C7] text-sm">
