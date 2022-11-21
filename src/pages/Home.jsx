@@ -14,5 +14,5 @@ export default function Home() {
     navigate("/user/dashboard");
   }
 
-  return <></>;
+  return null;
 }

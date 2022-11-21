@@ -19,7 +19,7 @@ export default function LogoutModal({ onClose }) {
   };
   return (
     <div
-      className="w-96 h-60 bg-white backdrop-blur-sm rounded-lg shadow-lg
+      className="w-96 h-40 bg-white backdrop-blur-sm rounded-lg shadow-lg
       fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2"
     >
       <div className="flex flex-col items-center justify-center h-full">

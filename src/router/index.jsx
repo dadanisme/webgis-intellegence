@@ -24,6 +24,7 @@ const AdminShp = lazy(() => import("../pages/admin/Shp"));
 const Survey = lazy(() => import("../pages/survey/Survey"));
 const SurveyForm = lazy(() => import("../pages/survey/SurveyForm"));
 const NotFound = lazy(() => import("../pages/NotFound"));
+const Map = lazy(() => import("../pages/Map"));
 
 export default function Router() {
   return (
@@ -49,6 +50,7 @@ export default function Router() {
                 <Route path="packages" element={<AdminPackages />} />
                 <Route path="shp" element={<AdminShp />} />
               </Route>
+              <Route path="/map" element={<Map />} />
               <Route path="/survey" element={<Survey />}>
                 <Route path=":id" element={<SurveyForm />} />
               </Route>
