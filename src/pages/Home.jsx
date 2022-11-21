@@ -1,26 +1,18 @@
-import React from "react";
+import { useSelector } from "react-redux";
+import { selectUser } from "../store/slices/user";
 import { useNavigate } from "react-router-dom";
-import { getAuth, signOut } from "firebase/auth";
-import app from "../firebase";
-import alert from "../utils/alert";
-export default function Home() {
-  const navigate = useNavigate();
-  const handleLogout = () => {
-    const auth = getAuth(app);
-    signOut(auth)
-      .then(() => {
-        alert.success("Logged out successfully");
-        navigate("/auth/login");
-      })
-      .catch((error) => {
-        alert.error(error.message);
-      });
-  };
 
-  return (
-    <div>
-      Home
-      <button onClick={handleLogout}>Logout</button>
-    </div>
-  );
+export default function Home() {
+  const { user } = useSelector(selectUser);
+  const navigate = useNavigate();
+
+  if (user?.role === "admin") {
+    navigate("/admin/dashboard");
+  } else if (user?.role === "user") {
+    navigate("/user/dashboard");
+  } else {
+    navigate("/user/dashboard");
+  }
+
+  return <></>;
 }
