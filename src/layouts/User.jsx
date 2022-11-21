@@ -19,10 +19,10 @@ export default function User() {
     <>
       <aside
         className={clsx(
-          "h-screen bg-white shadow-lg w-[300px] absolute top-0",
+          "h-screen bg-white shadow-lg w-[300px] fixed top-0",
           "transition-all duration-300 ease-in-out p-6",
           "flex flex-col gap-8",
-          isSidebarOpen ? "left-0" : "-left-[300px]"
+          isSidebarOpen ? "left-20" : "-left-[220px]"
         )}
       >
         <button
