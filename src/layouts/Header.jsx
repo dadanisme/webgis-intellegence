@@ -1,11 +1,9 @@
-import React from "react";
-import { Outlet } from "react-router-dom";
+import ProfileDropdown from "../components/header/ProfileDropdown";
 
 export default function Header() {
   return (
-    <div>
-      Header
-      <Outlet />
-    </div>
+    <nav className="shadow-lg sticky top-0 h-20 flex justify-end items-center px-8">
+      <ProfileDropdown />
+    </nav>
   );
 }

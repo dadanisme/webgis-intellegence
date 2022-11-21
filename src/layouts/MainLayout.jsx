@@ -4,6 +4,7 @@ import { MdDashboard } from "react-icons/md";
 import { FaLayerGroup } from "react-icons/fa";
 import { RiSurveyLine } from "react-icons/ri";
 import clsx from "clsx";
+import Header from "./Header";
 
 export default function MainLayout() {
   const location = useLocation();
@@ -28,7 +29,9 @@ export default function MainLayout() {
           <NavItem icon={<RiSurveyLine />} href="/survey" />
         </nav>
       </aside>
+
       <div className="ml-20">
+        <Header />
         <Outlet />
       </div>
     </div>
