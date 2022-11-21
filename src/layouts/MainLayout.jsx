@@ -7,13 +7,40 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../store/slices/user";
 import Header from "./Header";
 import NavItem from "../components/sidebar/NavItem";
-
+import { useState } from "react";
+import clsx from "clsx";
+import { BsChevronRight, BsChevronLeft } from "react-icons/bs";
 export default function MainLayout() {
   const location = useLocation();
   const { user } = useSelector(selectUser);
+
+  const [showSidebar, setShowSidebar] = useState(true);
+
+  const toggleSidebar = () => {
+    setShowSidebar(!showSidebar);
+  };
+
   return (
     <div>
-      <aside className="bg-[#4461F2] z-[1] h-screen w-20 absolute left-0 top-0 flex flex-col items-center">
+      <aside
+        className={clsx(
+          "bg-[#4461F2] z-[1] h-screen w-20 absolute top-0 flex flex-col items-center",
+          "transition-all duration-300 ease-in-out",
+          showSidebar ? "left-0" : "-left-20"
+        )}
+      >
+        {location.pathname === "/map" && (
+          <button
+            className="absolute top-2 -right-8 bg-white rounded-full flex items-center justify-center p-1.5 shadow-lg"
+            onClick={toggleSidebar}
+          >
+            {showSidebar ? (
+              <BsChevronLeft className="text-xs" />
+            ) : (
+              <BsChevronRight className="text-xs" />
+            )}
+          </button>
+        )}
         <figure className="flex items-center justify-center bg-[#FFFBFA] w-14 h-14 rounded-full mt-4 shadow-lg">
           <img src={logo} alt="logo" className="object-contain w-8 h-8" />
         </figure>
@@ -35,8 +62,8 @@ export default function MainLayout() {
         </nav>
       </aside>
 
-      <div className="ml-20 relative">
-        <Header />
+      <div className={clsx("relative", showSidebar ? "ml-20" : "ml-0")}>
+        {location.pathname !== "/map" && <Header />}
         <Outlet />
       </div>
     </div>
