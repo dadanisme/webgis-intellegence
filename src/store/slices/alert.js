@@ -19,7 +19,6 @@ export const alertSlice = createSlice({
     },
     clearAlert: (state) => {
       state.message = "";
-      state.type = "success";
       state.title = "";
       state.show = false;
     },
