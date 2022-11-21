@@ -1,5 +1,15 @@
-import React from "react";
+import Greeting from "../../components/user-admin/dashboard/Greeting";
+import Chart from "../../components/user-admin/dashboard/Chart";
+import Statistics from "../../components/user-admin/dashboard/Statistics";
 
 export default function Dashboard() {
-  return <div>Dashboard</div>;
+  return (
+    <div className="p-6">
+      <Greeting />
+      <Statistics />
+      <div className="w-full h-96 mt-4">
+        <Chart />
+      </div>
+    </div>
+  );
 }

@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/images/logo.svg";
 import { MdDashboard } from "react-icons/md";
 import { FaLayerGroup } from "react-icons/fa";
@@ -12,6 +12,7 @@ import clsx from "clsx";
 import { BsChevronRight, BsChevronLeft } from "react-icons/bs";
 export default function MainLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { user } = useSelector(selectUser);
 
   const [showSidebar, setShowSidebar] = useState(true);
@@ -41,7 +42,10 @@ export default function MainLayout() {
             )}
           </button>
         )}
-        <figure className="flex items-center justify-center bg-[#FFFBFA] w-14 h-14 rounded-full mt-4 shadow-lg">
+        <figure
+          className="flex items-center justify-center bg-[#FFFBFA] w-14 h-14 rounded-full mt-4 shadow-lg cursor-pointer"
+          onClick={() => navigate("/")}
+        >
           <img src={logo} alt="logo" className="object-contain w-8 h-8" />
         </figure>
 

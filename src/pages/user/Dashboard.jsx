@@ -1,7 +1,7 @@
-import Greeting from "../../components/user/dashboard/Greeting";
-import SubscriptionStatus from "../../components/user/dashboard/SubscriptionStatus";
-import Chart from "../../components/user/dashboard/Chart";
-import Statistics from "../../components/user/dashboard/Statistics";
+import Greeting from "../../components/user-admin/dashboard/Greeting";
+import SubscriptionStatus from "../../components/user-admin/dashboard/SubscriptionStatus";
+import Chart from "../../components/user-admin/dashboard/Chart";
+import Statistics from "../../components/user-admin/dashboard/Statistics";
 
 export default function Dashboard() {
   return (
