@@ -31,7 +31,7 @@ export default function MainLayout() {
       >
         {location.pathname === "/map" && (
           <button
-            className="absolute top-2 -right-8 bg-white rounded-full flex items-center justify-center p-1.5 shadow-lg"
+            className="absolute top-8 hover:bg-gray-50 -right-8 bg-white rounded-full flex items-center justify-center p-1.5 shadow-lg"
             onClick={toggleSidebar}
           >
             {showSidebar ? (
