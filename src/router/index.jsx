@@ -3,11 +3,11 @@ import { lazy, Suspense } from "react";
 import Loading from "../components/loading";
 
 // layouts
+const MainLayout = lazy(() => import("../layouts/MainLayout"));
 const Authentication = lazy(() => import("../layouts/AuthLayout"));
 const AuthLayout = lazy(() => import("../layouts/AuthPage"));
 const UserLayout = lazy(() => import("../layouts/User"));
 const AdminLayout = lazy(() => import("../layouts/Admin"));
-const Header = lazy(() => import("../layouts/Header"));
 
 // pages
 const Home = lazy(() => import("../pages/Home"));
@@ -36,20 +36,22 @@ export default function Router() {
               <Route path="register" element={<Register />} />
               <Route path="forgot-password" element={<ForgotPassword />} />
             </Route>
-            <Route index element={<Home />} />
-            <Route path="/user" element={<UserLayout />}>
-              <Route path="dashboard" element={<UserDashboard />} />
-              <Route path="packages" element={<UserPackages />} />
-              <Route path="shp" element={<UserShp />} />
-            </Route>
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route path="dashboard" element={<AdminDashboard />} />
-              <Route path="users" element={<AdminUsers />} />
-              <Route path="packages" element={<AdminPackages />} />
-              <Route path="shp" element={<AdminShp />} />
-            </Route>
-            <Route path="/survey" element={<Survey />}>
-              <Route path=":id" element={<SurveyForm />} />
+            <Route element={<MainLayout />}>
+              <Route index element={<Home />} />
+              <Route path="/user" element={<UserLayout />}>
+                <Route path="dashboard" element={<UserDashboard />} />
+                <Route path="packages" element={<UserPackages />} />
+                <Route path="shp" element={<UserShp />} />
+              </Route>
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route path="dashboard" element={<AdminDashboard />} />
+                <Route path="users" element={<AdminUsers />} />
+                <Route path="packages" element={<AdminPackages />} />
+                <Route path="shp" element={<AdminShp />} />
+              </Route>
+              <Route path="/survey" element={<Survey />}>
+                <Route path=":id" element={<SurveyForm />} />
+              </Route>
             </Route>
           </Route>
 
