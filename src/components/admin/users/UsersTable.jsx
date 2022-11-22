@@ -29,6 +29,7 @@ export default function UsersTable({ data }) {
           src={params.value}
           alt={params.row.name}
           sx={{ width: 40, height: 40 }}
+          referrerPolicy="no-referrer"
         />
       ),
     },

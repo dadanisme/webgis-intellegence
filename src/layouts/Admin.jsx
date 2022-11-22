@@ -8,23 +8,9 @@ import { TbPackage } from "react-icons/tb";
 import { FiLayers } from "react-icons/fi";
 import { RiGroupLine } from "react-icons/ri";
 import Photo from "../components/sidebar/Photo";
-import { selectUser } from "../store/slices/user";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import alert from "../utils/alert";
 
 export default function Admin() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const { user } = useSelector(selectUser);
-  const role = user?.role;
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (role !== "admin") {
-      alert.info("You are not admin, redirecting to user dashboard");
-      navigate("/user/dashboard");
-    }
-  }, [role, navigate]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);

@@ -13,7 +13,11 @@ export default function Photo() {
           size={70}
           className="absolute"
         />
-        <Avatar src={details?.photoURL} sx={{ width: 65, height: 65 }} />
+        <Avatar
+          src={details?.photoURL}
+          sx={{ width: 65, height: 65 }}
+          referrerPolicy="no-referrer"
+        />
       </figure>
       <figcaption className="flex flex-col justify-center ml-4 overflow-hidden">
         <h1 className="text-md font-semibold">

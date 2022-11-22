@@ -20,7 +20,26 @@ export default function AuthLayout() {
 
         readUserData(user.uid).then((doc) => {
           if (doc.exists) {
-            dispatch(setUser(doc.val()));
+            const userData = doc.val();
+            dispatch(setUser(userData));
+
+            // conditionally redirect user to dashboard
+            const adminInUserPage =
+              userData?.role === "admin" &&
+              location.pathname.startsWith("/user");
+            const userInAdminPage =
+              userData?.role === "user" &&
+              location.pathname.startsWith("/admin");
+            const userDoesntHaveRole =
+              !userData?.role && location.pathname.startsWith("/admin");
+
+            if (adminInUserPage) {
+              navigate("/admin/dashboard");
+            } else if (userInAdminPage) {
+              navigate("/user/dashboard");
+            } else if (userDoesntHaveRole) {
+              navigate("/user/dashboard");
+            }
           } else {
             alert.error("User not found");
           }
@@ -33,7 +52,11 @@ export default function AuthLayout() {
         }
       } else {
         dispatch(clearUser());
-        const authPages = ["/auth/login", "/auth/register"];
+        const authPages = [
+          "/auth/login",
+          "/auth/register",
+          "/auth/forgot-password",
+        ];
         if (!authPages.includes(location.pathname)) {
           alert.error("You need to login first");
           navigate("/auth/login");
