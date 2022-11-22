@@ -1,9 +1,18 @@
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { Avatar } from "@mui/material";
+import { Avatar, Modal, Tooltip } from "@mui/material";
+import { useState, lazy, Suspense } from "react";
+import { FaEdit, FaTrash } from "react-icons/fa";
+import Progress from "../../../components/loading/Progress";
+
+const UsersModal = lazy(() => import("./UsersModal"));
 
 export default function UsersTable({ data }) {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalData, setModalData] = useState({});
+
   const handleEdit = (user) => {
-    console.log(user);
+    setModalData(user);
+    setModalOpen(true);
   };
 
   const handleDelete = (uid) => {
@@ -74,19 +83,23 @@ export default function UsersTable({ data }) {
       renderCell: (params) => {
         return (
           <div className="flex justify-center">
-            <button
-              className="bg-blue-500 text-white px-2 py-1 rounded-md"
-              onClick={() => handleEdit(params.row)}
-            >
-              Edit
-            </button>
+            <Tooltip arrow title="Edit">
+              <button
+                className="bg-blue-500 text-white px-2 py-1 rounded-md w-12 h-8 flex items-center justify-center"
+                onClick={() => handleEdit(params.row)}
+              >
+                <FaEdit />
+              </button>
+            </Tooltip>
 
-            <button
-              className="bg-red-500 text-white px-2 py-1 rounded-md ml-2"
-              onClick={() => handleDelete(params.row.localId)}
-            >
-              Delete
-            </button>
+            <Tooltip arrow title="Delete">
+              <button
+                className="bg-red-500 text-white px-2 py-1 rounded-md ml-2 w-12 h-8 flex items-center justify-center"
+                onClick={() => handleDelete(params.row.localId)}
+              >
+                <FaTrash />
+              </button>
+            </Tooltip>
           </div>
         );
       },
@@ -112,6 +125,19 @@ export default function UsersTable({ data }) {
           },
         }}
       />
+      <Modal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        timeout={500}
+        closeAfterTransition
+        sx={{
+          zIndex: 10,
+        }}
+      >
+        <Suspense fallback={<Progress />}>
+          <UsersModal data={modalData} onClose={() => setModalOpen(false)} />
+        </Suspense>
+      </Modal>
     </div>
   );
 }

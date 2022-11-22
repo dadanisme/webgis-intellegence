@@ -7,7 +7,7 @@ export default function Dashboard() {
     <div className="p-6 grid gap-4">
       <Greeting />
       <Statistics />
-      <div className="w-full h-96 overflow-auto">
+      <div className="w-full h-96 overflow-hidden">
         <Chart />
       </div>
     </div>

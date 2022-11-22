@@ -1,4 +1,4 @@
-import { set, get, ref } from "firebase/database";
+import { set, get, ref, update, onValue } from "firebase/database";
 import db from "./database";
 
 export const writeUserData = (userId, company, role, displayName) => {
@@ -7,6 +7,13 @@ export const writeUserData = (userId, company, role, displayName) => {
     company: company,
     role: role,
     displayName: displayName,
+  });
+};
+
+export const updateUserData = (userId, ...props) => {
+  update(ref(db, "/users/" + userId), {
+    uid: userId,
+    ...props[0],
   });
 };
 

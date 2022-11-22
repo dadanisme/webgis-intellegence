@@ -9,7 +9,7 @@ export default function Dashboard() {
       <Greeting />
       <SubscriptionStatus />
       <Statistics />
-      <div className="w-full h-96 overflow-auto">
+      <div className="w-full h-96 overflow-hidden">
         <Chart />
       </div>
     </div>

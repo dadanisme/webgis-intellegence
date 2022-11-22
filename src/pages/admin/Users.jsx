@@ -4,7 +4,11 @@ import UsersTable from "../../components/admin/users/UsersTable";
 import AdminsTable from "../../components/admin/users/AdminsTable";
 import Progress from "../../components/loading/Progress";
 import { getAdmins } from "../../firebase/utils";
+import { selectApp } from "../../store/slices/app";
+import { useSelector } from "react-redux";
+
 export default function Users() {
+  const { updateToken } = useSelector(selectApp);
   const api = import.meta.env.VITE_API;
   const [data, setData] = useState([]);
   const [admins, setAdmins] = useState([]);
@@ -23,7 +27,7 @@ export default function Users() {
       const admins = await getAdmins();
       setAdmins(admins);
     })();
-  }, []);
+  }, [updateToken]);
 
   return (
     <div className="p-6">

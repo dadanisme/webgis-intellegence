@@ -7,7 +7,7 @@ export default function Notification() {
   const { title, message, show, type } = useSelector(selectAlert);
 
   return (
-    <div className="fixed top-6 right-6 z-[10]">
+    <div className="fixed top-6 right-6 z-[20]">
       <Slide
         direction="left"
         in={show}
