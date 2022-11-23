@@ -53,7 +53,8 @@ export default function UsersModal({ data, onClose }) {
         dispatch(randomizeUpdateToken());
         onClose();
       } else {
-        alert.error(data.message);
+        console.log(data);
+        alert.error(data.error);
       }
     } catch (err) {
       console.log(err);
