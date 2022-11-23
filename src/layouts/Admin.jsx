@@ -28,7 +28,7 @@ export default function Admin() {
       >
         <button
           onClick={toggleSidebar}
-          className="p-3 rounded-lg absolute top-4 -right-14 bg-[#4461F2]"
+          className="p-3 rounded-lg absolute top-4 -right-14 bg-[#4461F2] shadow-lg"
         >
           <GiHamburgerMenu className="text-xl text-white" />
         </button>
