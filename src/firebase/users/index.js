@@ -1,4 +1,4 @@
-import { set, get, ref, update } from "firebase/database";
+import { set, get, ref, update, remove } from "firebase/database";
 import db from "../database";
 
 export const writeUserData = (userId, company, role, displayName) => {
@@ -19,6 +19,16 @@ export const updateUserData = (userId, ...props) => {
 
 export const readUserData = (userId) => {
   return get(ref(db, "/users/" + userId));
+};
+
+export const deleteUserData = (userId) => {
+  remove(ref(db, "/users/" + userId));
+
+  const api = import.meta.env.VITE_API;
+
+  fetch(`${api}/user/${userId}`, {
+    method: "DELETE",
+  });
 };
 
 export const getAdmins = async () => {

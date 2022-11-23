@@ -6,11 +6,14 @@ import { useState, lazy, Suspense } from "react";
 import Progress from "@/components/loading/Progress";
 
 const EditFeatureModal = lazy(() => import("./modals/EditFeatureModal"));
+const DeleteFeatureModal = lazy(() => import("./modals/DeleteFeatureModal"));
 
 export default function FeaturesTable() {
   const features = useRealTimeFeatures();
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editModalData, setEditModalData] = useState({});
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteModalData, setDeleteModalData] = useState({});
 
   const data = Object.keys(features).map((key) => {
     return {
@@ -25,6 +28,11 @@ export default function FeaturesTable() {
   const handleEdit = (feature) => {
     setEditModalOpen(true);
     setEditModalData(feature);
+  };
+
+  const handleDelete = (feature) => {
+    setDeleteModalOpen(true);
+    setDeleteModalData(feature);
   };
 
   const columns = [
@@ -63,7 +71,7 @@ export default function FeaturesTable() {
             <Tooltip arrow title="Delete">
               <button
                 className="bg-red-500 text-white px-2 py-1 rounded-md ml-2 w-12 h-8 flex items-center justify-center"
-                // onClick={() => handleDelete(params.row.localId)}
+                onClick={() => handleDelete(params.row)}
               >
                 <FaTrash />
               </button>
@@ -108,6 +116,23 @@ export default function FeaturesTable() {
           <EditFeatureModal
             data={editModalData}
             onClose={() => setEditModalOpen(false)}
+          />
+        </Suspense>
+      </Modal>
+
+      <Modal
+        open={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        timeout={500}
+        closeAfterTransition
+        sx={{
+          zIndex: 10,
+        }}
+      >
+        <Suspense fallback={<Progress />}>
+          <DeleteFeatureModal
+            data={deleteModalData}
+            onClose={() => setDeleteModalOpen(false)}
           />
         </Suspense>
       </Modal>

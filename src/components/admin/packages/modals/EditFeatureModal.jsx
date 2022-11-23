@@ -37,7 +37,7 @@ export default function EditFeatureModal({ data, onClose }) {
     >
       <header className="w-full">
         <div className="flex justify-between items-center p-4">
-          <h2 className="text-xl font-semibold">Add Feature</h2>
+          <h2 className="text-xl font-semibold">Edit Feature</h2>
           <button
             className="text-red-500 hover:text-red-600"
             onClick={() => onClose()}
