@@ -20,6 +20,7 @@ import alert from "../../utils/alert";
 import SideImage from "../../components/auth/login/SideImage";
 import logoDark from "../../assets/images/logo-dark.svg";
 import clsx from "clsx";
+import Title from "@/layouts/Title";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -81,6 +82,7 @@ export default function Login() {
 
   return (
     <div className="flex items-center justify-center h-screen px-4 lg:px-16 gap-12">
+      <Title>Login - WebGIS Intellegence</Title>
       <SideImage />
       <aside className="flex items-center justify-center">
         <div

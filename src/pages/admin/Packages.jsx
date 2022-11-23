@@ -5,6 +5,7 @@ import RequestsTable from "@/components/admin/packages/RequestsTable";
 import { Tooltip, Modal } from "@mui/material";
 import { FaPlus } from "react-icons/fa";
 import { useState, lazy, Suspense } from "react";
+import Title from "@/layouts/Title";
 
 const AddFeatureModal = lazy(() =>
   import("@/components/admin/packages/modals/AddFeatureModal")
@@ -20,6 +21,7 @@ export default function Packages() {
 
   return (
     <div className="p-6">
+      <Title>Packages Setting - WebGIS Intellegence</Title>
       <div className="shadow-lg p-6">
         <header className="flex justify-between items-center mb-4">
           <h1 className="font-semibold text-2xl">Packages Table</h1>

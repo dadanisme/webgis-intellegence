@@ -14,6 +14,7 @@ import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import { writeUserData } from "../../firebase/utils";
 import app from "../../firebase";
 import alert from "../../utils/alert";
+import Title from "@/layouts/Title";
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
@@ -52,6 +53,7 @@ export default function Register() {
 
   return (
     <div className="flex items-center justify-center h-screen px-4 lg:px-16 gap-12">
+      <Title>Register - WebGIS Intellegence</Title>
       <aside className="relative w-full h-[300px] hidden lg:flex items-center">
         <div className="absolute h-[226px] w-[226px] bg-[#DDA82A] blur-[158.5px] z-[-3] left-[75px] -top-[27px]"></div>
         <div className="absolute h-[226px] w-[226px] bg-[#4461F2] blur-[158.5px] z-[-3] left-[279px] top-[200px]"></div>

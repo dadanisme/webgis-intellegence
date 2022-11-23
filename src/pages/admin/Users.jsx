@@ -6,6 +6,7 @@ import Progress from "../../components/loading/Progress";
 import { getAdmins } from "../../firebase/utils";
 import { selectApp } from "../../store/slices/app";
 import { useSelector } from "react-redux";
+import Title from "@/layouts/Title";
 
 export default function Users() {
   const { updateToken } = useSelector(selectApp);
@@ -31,6 +32,7 @@ export default function Users() {
 
   return (
     <div className="p-6">
+      <Title>Management Users - WebGIS Intellegence</Title>
       <Statistics />
 
       <div className="shadow-lg p-6 mt-8">

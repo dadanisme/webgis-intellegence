@@ -4,6 +4,7 @@ import View from "ol/View";
 import { Tile as TileLayer } from "ol/layer";
 import { useRef, useEffect } from "react";
 import "./map.css";
+import Title from "@/layouts/Title";
 
 export default function MapPage() {
   const mapRef = useRef(null);
@@ -28,6 +29,8 @@ export default function MapPage() {
   }, []);
 
   return (
-    <div ref={mapRef} className="h-screen w-screen fixed top-0 left-0"></div>
+    <div ref={mapRef} className="h-screen w-screen fixed top-0 left-0">
+      <Title>Map - WebGIS Intellegence</Title>
+    </div>
   );
 }
