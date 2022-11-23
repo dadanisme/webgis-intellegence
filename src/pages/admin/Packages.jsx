@@ -10,6 +10,10 @@ const AddFeatureModal = lazy(() =>
   import("@/components/admin/packages/modals/AddFeatureModal")
 );
 
+const AddPackageModal = lazy(() =>
+  import("@/components/admin/packages/modals/AddPackageModal")
+);
+
 export default function Packages() {
   const [addFeatureModalOpen, setAddFeatureModalOpen] = useState(false);
   const [addPackageModalOpen, setAddPackageModalOpen] = useState(false);
@@ -17,7 +21,28 @@ export default function Packages() {
   return (
     <div className="p-6">
       <div className="shadow-lg p-6">
-        <h1 className="font-semibold text-2xl mb-4">Packages Table</h1>
+        <header className="flex justify-between items-center mb-4">
+          <h1 className="font-semibold text-2xl">Packages Table</h1>
+          <Tooltip arrow title="Add Package">
+            <button
+              className="bg-blue-500 text-white p-2 rounded-md shadow-lg"
+              onClick={() => setAddPackageModalOpen(true)}
+            >
+              <FaPlus />
+            </button>
+          </Tooltip>
+        </header>
+        <Modal
+          open={addPackageModalOpen}
+          onClose={() => setAddPackageModalOpen(false)}
+          sx={{
+            zIndex: 10,
+          }}
+        >
+          <Suspense fallback={<Progress />}>
+            <AddPackageModal onClose={() => setAddPackageModalOpen(false)} />
+          </Suspense>
+        </Modal>
         {true ? (
           <PackagesTable />
         ) : (
