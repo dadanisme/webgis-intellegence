@@ -4,6 +4,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { useRealTimeFeatures } from "@/hooks";
 import { useState, lazy, Suspense } from "react";
 import Progress from "@/components/loading/Progress";
+import { formatter } from "@/utils/formatter";
 
 const EditFeatureModal = lazy(() => import("./modals/EditFeatureModal"));
 const DeleteFeatureModal = lazy(() => import("./modals/DeleteFeatureModal"));
@@ -51,6 +52,9 @@ export default function FeaturesTable() {
       field: "price",
       headerName: "Price",
       width: 150,
+      renderCell: (params) => {
+        return <span>{formatter.format(params.row.price)}</span>;
+      },
     },
     {
       field: "actions",

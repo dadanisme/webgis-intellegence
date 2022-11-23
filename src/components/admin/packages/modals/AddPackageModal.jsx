@@ -6,6 +6,7 @@ import alert from "@/utils/alert";
 import { getFeatures } from "@/firebase/utils";
 import { useEffect, useState } from "react";
 import { Tooltip, Checkbox as MUICheckbox } from "@mui/material";
+import { formatter } from "@/utils/formatter";
 
 export default function AddFeatureModal({ onClose }) {
   const form = useRef(null);
@@ -57,6 +58,7 @@ export default function AddFeatureModal({ onClose }) {
       name,
       description,
       features: selectedFeatures,
+      price,
     };
 
     try {
@@ -68,11 +70,6 @@ export default function AddFeatureModal({ onClose }) {
       alert.error("Failed to create package");
     }
   };
-
-  const formatter = new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-  });
 
   return (
     <div
