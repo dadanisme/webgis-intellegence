@@ -14,6 +14,8 @@ export default function AuthLayout() {
   const location = useLocation();
 
   useEffect(() => {
+    // scroll to top
+    window.scrollTo(0, 0);
     onAuthStateChanged(auth, (user) => {
       if (user) {
         localStorage.setItem("token", user.stsTokenManager.accessToken);
