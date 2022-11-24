@@ -5,10 +5,14 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import Progress from "../../../components/loading/Progress";
 
 const UsersModal = lazy(() => import("./UsersModal"));
+const DeleteUserModal = lazy(() => import("./DeleteUserModal"));
 
 export default function UsersTable({ data }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalData, setModalData] = useState({});
+
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteModalData, setDeleteModalData] = useState({});
 
   const handleEdit = (user) => {
     setModalData(user);
@@ -16,7 +20,8 @@ export default function UsersTable({ data }) {
   };
 
   const handleDelete = (uid) => {
-    console.log("delete", uid);
+    setDeleteModalOpen(true);
+    setDeleteModalData({ uid });
   };
 
   const columns = [
@@ -137,6 +142,22 @@ export default function UsersTable({ data }) {
       >
         <Suspense fallback={<Progress />}>
           <UsersModal data={modalData} onClose={() => setModalOpen(false)} />
+        </Suspense>
+      </Modal>
+      <Modal
+        open={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        timeout={500}
+        closeAfterTransition
+        sx={{
+          zIndex: 10,
+        }}
+      >
+        <Suspense fallback={<Progress />}>
+          <DeleteUserModal
+            data={deleteModalData}
+            onClose={() => setDeleteModalOpen(false)}
+          />
         </Suspense>
       </Modal>
     </div>
