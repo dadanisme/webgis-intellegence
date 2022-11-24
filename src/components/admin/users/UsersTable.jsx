@@ -1,27 +1,69 @@
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { Avatar, Modal, Tooltip } from "@mui/material";
+import {
+  Avatar,
+  Modal,
+  Tooltip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
+  Button,
+} from "@mui/material";
 import { useState, lazy, Suspense } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import Progress from "../../../components/loading/Progress";
+import alert from "../../../utils/alert";
+import { useDispatch } from "react-redux";
+import { randomizeUpdateToken } from "../../../store/slices/app";
+import { set } from "firebase/database";
 
 const UsersModal = lazy(() => import("./UsersModal"));
-const DeleteUserModal = lazy(() => import("./DeleteUserModal"));
 
 export default function UsersTable({ data }) {
+  const dispatch = useDispatch();
   const [modalOpen, setModalOpen] = useState(false);
   const [modalData, setModalData] = useState({});
+  const [pageSize, setPageSize] = useState(10);
 
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [deleteModalData, setDeleteModalData] = useState({});
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogData, setDialogData] = useState({});
 
   const handleEdit = (user) => {
     setModalData(user);
     setModalOpen(true);
   };
 
-  const handleDelete = (uid) => {
-    setDeleteModalOpen(true);
-    setDeleteModalData({ uid });
+  const handleDelete = (data) => {
+    setDialogOpen(true);
+    setDialogData(data);
+  };
+
+  const deleteUser = () => {
+    alert.info("Deleting user...");
+    const api = import.meta.env.VITE_API;
+    fetch(`${api}/user/${dialogData.uid}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setDialogOpen(false);
+          alert.success("Account deleted successfully");
+          dispatch(randomizeUpdateToken());
+        } else {
+          console.log(data);
+          alert.error(data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        alert.error(err.message);
+      });
   };
 
   const columns = [
@@ -101,7 +143,7 @@ export default function UsersTable({ data }) {
             <Tooltip arrow title="Delete">
               <button
                 className="bg-red-500 text-white px-2 py-1 rounded-md ml-2 w-12 h-8 flex items-center justify-center"
-                onClick={() => handleDelete(params.row.localId)}
+                onClick={() => handleDelete(params.row)}
               >
                 <FaTrash />
               </button>
@@ -112,11 +154,17 @@ export default function UsersTable({ data }) {
     },
   ];
   return (
-    <div className="h-[40rem]">
+    <div
+      style={{
+        height: 200 + 45 * (data.length > pageSize ? pageSize : data.length),
+      }}
+    >
       <DataGrid
         rows={data}
         columns={columns}
-        pageSize={10}
+        pageSize={pageSize}
+        rowsPerPageOptions={[5, 10, 20]}
+        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
         getRowId={(row) => row.localId}
         disableColumnFilter
         disableColumnSelector
@@ -144,22 +192,32 @@ export default function UsersTable({ data }) {
           <UsersModal data={modalData} onClose={() => setModalOpen(false)} />
         </Suspense>
       </Modal>
-      <Modal
-        open={deleteModalOpen}
-        onClose={() => setDeleteModalOpen(false)}
-        timeout={500}
-        closeAfterTransition
+      <Dialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
         sx={{
           zIndex: 10,
         }}
       >
-        <Suspense fallback={<Progress />}>
-          <DeleteUserModal
-            data={deleteModalData}
-            onClose={() => setDeleteModalOpen(false)}
-          />
-        </Suspense>
-      </Modal>
+        <DialogTitle id="alert-dialog-title">Delete Account</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            You are going to delete account{" "}
+            <span className="font-bold">
+              {dialogData.displayName || dialogData.uid}
+            </span>
+            , proceed?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
+          <Button onClick={deleteUser} autoFocus>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

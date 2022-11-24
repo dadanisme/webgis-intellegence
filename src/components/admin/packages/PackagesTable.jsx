@@ -3,9 +3,11 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { Tooltip } from "@mui/material";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { formatter } from "@/utils/formatter";
+import { useState } from "react";
 
 export default function PackagesTable() {
   const packages = useRealTimePackages();
+  const [pageSize, setPageSize] = useState(10);
 
   const data = Object.keys(packages).map((key) => ({
     id: key,
@@ -80,11 +82,17 @@ export default function PackagesTable() {
   ];
 
   return (
-    <div className="h-[40rem]">
+    <div
+      style={{
+        height: 200 + 75 * (data.length > pageSize ? pageSize : data.length),
+      }}
+    >
       <DataGrid
         rows={data}
         columns={columns}
-        pageSize={10}
+        pageSize={pageSize}
+        rowsPerPageOptions={[5, 10, 20]}
+        onPageSizeChange={(val) => setPageSize(val)}
         getRowId={(row) => row.id}
         disableColumnFilter
         disableColumnSelector

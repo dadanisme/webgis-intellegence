@@ -1,7 +1,9 @@
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { Avatar } from "@mui/material";
+import { useState } from "react";
 
 export default function AdminsTable({ data }) {
+  const [pageSize, setPageSize] = useState(5);
   const handleEdit = (user) => {
     console.log(user);
   };
@@ -64,11 +66,17 @@ export default function AdminsTable({ data }) {
     },
   ];
   return (
-    <div className="h-96">
+    <div
+      style={{
+        height: 200 + 45 * (data.length > pageSize ? pageSize : data.length),
+      }}
+    >
       <DataGrid
         rows={data}
         columns={columns}
-        pageSize={10}
+        pageSize={pageSize}
+        rowsPerPageOptions={[5, 10, 20]}
+        onPageSizeChange={(val) => setPageSize(val)}
         getRowId={(row) => row.uid}
         disableColumnFilter
         disableColumnSelector

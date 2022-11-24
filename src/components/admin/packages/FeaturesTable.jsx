@@ -15,6 +15,7 @@ export default function FeaturesTable() {
   const [editModalData, setEditModalData] = useState({});
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteModalData, setDeleteModalData] = useState({});
+  const [pageSize, setPageSize] = useState(10);
 
   const data = Object.keys(features).map((key) => {
     return {
@@ -87,11 +88,17 @@ export default function FeaturesTable() {
   ];
 
   return (
-    <div className="h-[40rem]">
+    <div
+      style={{
+        height: 200 + 45 * (data.length > pageSize ? pageSize : data.length),
+      }}
+    >
       <DataGrid
         rows={data}
         columns={columns}
-        pageSize={10}
+        pageSize={pageSize}
+        rowsPerPageOptions={[5, 10, 20]}
+        onPageSizeChange={(val) => setPageSize(val)}
         getRowId={(row) => row.id}
         disableColumnFilter
         disableColumnSelector
