@@ -7,11 +7,13 @@ import { FaEdit } from "react-icons/fa";
 import alert from "../../../utils/alert";
 import { useDispatch } from "react-redux";
 import { randomizeUpdateToken } from "../../../store/slices/app";
-import { updateUserData } from "../../../firebase/utils";
+import { updateUserData, uploadImage } from "../../../firebase/utils";
 
 export default function UsersModal({ data, onClose }) {
   const [user, setUser] = useState(null);
+  const [imgSrc, setImgSrc] = useState(data.photoUrl);
   const form = useRef(null);
+  const fileInput = useRef(null);
   const dispatch = useDispatch();
   const api = import.meta.env.VITE_API;
 
@@ -23,10 +25,12 @@ export default function UsersModal({ data, onClose }) {
     const name = inputs[0].value;
     const email = inputs[1].value;
     const company = inputs[2].value;
+    const image = fileInput.current.files[0];
 
     const uid = data.localId;
 
     alert.info("Updating user data...");
+
     try {
       const res = await fetch(`${api}/user/${uid}`, {
         method: "PUT",
@@ -49,6 +53,13 @@ export default function UsersModal({ data, onClose }) {
         email,
       });
 
+      if (image) {
+        const url = await uploadImage(image, uid);
+        updateUserData(uid, {
+          photoUrl: url,
+        });
+      }
+
       if (data.success) {
         alert.success("User updated successfully");
         dispatch(randomizeUpdateToken());
@@ -60,6 +71,17 @@ export default function UsersModal({ data, onClose }) {
     } catch (err) {
       console.log(err);
       alert.error(err.message || "Something went wrong");
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImgSrc(e.target.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -97,14 +119,16 @@ export default function UsersModal({ data, onClose }) {
         <div className="flex gap-8 w-full items-center justify-center flex-col md:flex-row">
           <figure className="h-full flex flex-col items-center justify-center relative">
             <Avatar
-              src={data.photoUrl}
+              src={imgSrc}
               sx={{ width: 150, height: 150 }}
               className="rounded-full shadow-lg"
+              referrerPolicy="no-referrer"
             />
 
             <button
               className="absolute right-2 bottom-2 bg-primary rounded-full shadow-lg
               p-2 flex items-center justify-center"
+              onClick={() => fileInput.current.click()}
             >
               <FaEdit className="text-white text-sm relative left-[1px]" />
             </button>
@@ -163,6 +187,16 @@ export default function UsersModal({ data, onClose }) {
                 defaultValue={user?.company}
               />
             </div>
+
+            <input
+              type="file"
+              accept="image/*"
+              name="photo"
+              className="hidden"
+              ref={fileInput}
+              onInput={handleFileChange}
+            />
+
             <button
               className="bg-[#4461F2] hover:bg-blue-700 h-[40px] text-white font-semibold py-2 mt-2 rounded-md shadow-lg"
               type="submit"
