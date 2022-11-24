@@ -15,11 +15,19 @@ export default function Users() {
   const [admins, setAdmins] = useState([]);
 
   useEffect(() => {
-    fetch(`${api}/users`)
+    fetch(`${api}/users`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
           setData(data.data);
+        } else {
+          throw new Error(data.message);
         }
       })
       .catch((err) => console.log(err));

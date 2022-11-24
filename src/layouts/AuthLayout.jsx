@@ -16,6 +16,7 @@ export default function AuthLayout() {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
+        localStorage.setItem("token", user.stsTokenManager.accessToken);
         dispatch(setUserDetails(JSON.parse(JSON.stringify(user))));
 
         readUserData(user.uid).then((doc) => {
