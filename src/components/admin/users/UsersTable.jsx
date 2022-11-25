@@ -86,7 +86,7 @@ export default function UsersTable({ data }) {
 
   const columns = [
     {
-      field: "photoUrl",
+      field: "photoURL",
       headerName: "Photo",
       width: 60,
       renderCell: (params) => (

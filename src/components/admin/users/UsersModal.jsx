@@ -56,7 +56,7 @@ export default function UsersModal({ data, onClose }) {
       if (image) {
         const url = await uploadImage(image, uid);
         updateUserData(uid, {
-          photoUrl: url,
+          photoURL: url,
         });
       }
 

@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../../store/slices/user";
 
 export default function Photo() {
-  const { details } = useSelector(selectUser);
+  const { details, user } = useSelector(selectUser);
   return (
     <div className="flex justify-start">
       <figure className="relative flex items-center justify-center">
@@ -14,7 +14,7 @@ export default function Photo() {
           className="absolute"
         />
         <Avatar
-          src={details?.photoURL}
+          src={user?.photoURL || details?.photoURL}
           sx={{ width: 65, height: 65 }}
           referrerPolicy="no-referrer"
         />
