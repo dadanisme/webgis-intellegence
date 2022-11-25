@@ -1,15 +1,42 @@
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { Avatar } from "@mui/material";
 import { useState } from "react";
+import {
+  Avatar,
+  Tooltip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
+  Button,
+} from "@mui/material";
+import { FaStudiovinari } from "react-icons/fa";
+import { demoteAdmin } from "@/firebase/utils";
+import alert from "@/utils/alert";
+import { useDispatch } from "react-redux";
+import { randomizeUpdateToken } from "@/store/slices/app";
 
 export default function AdminsTable({ data }) {
   const [pageSize, setPageSize] = useState(5);
-  const handleEdit = (user) => {
-    console.log(user);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogData, setDialogData] = useState({});
+  const dispatch = useDispatch();
+
+  const handleDemote = (data) => {
+    setDialogOpen(true);
+    setDialogData(data);
   };
 
-  const handleDelete = (uid) => {
-    console.log("delete", uid);
+  const demoteAdminHandler = (admin) => {
+    try {
+      demoteAdmin(admin.localId);
+      alert.success("Admin demoted successfully");
+      setDialogOpen(false);
+      dispatch(randomizeUpdateToken());
+    } catch (error) {
+      console.log(error);
+      alert.error(error.message);
+    }
   };
 
   const columns = [
@@ -47,19 +74,21 @@ export default function AdminsTable({ data }) {
       renderCell: (params) => {
         return (
           <div className="flex justify-center">
-            <button
-              className="bg-blue-500 text-white px-2 py-1 rounded-md"
-              onClick={() => handleEdit(params.row)}
-            >
-              Edit
-            </button>
-
-            <button
-              className="bg-red-500 text-white px-2 py-1 rounded-md ml-2"
-              onClick={() => handleDelete(params.row.uid)}
-            >
-              Delete
-            </button>
+            <Tooltip arrow title="Demote to user">
+              <button
+                className="bg-green-500 text-white px-2 py-1 rounded-md ml-2 w-12 h-8 flex items-center justify-center"
+                onClick={() =>
+                  handleDemote({
+                    ...params.row,
+                    title: "Demote admin",
+                    message: "Demote this admin to user?",
+                    action: () => demoteAdminHandler(params.row),
+                  })
+                }
+              >
+                <FaStudiovinari />
+              </button>
+            </Tooltip>
           </div>
         );
       },
@@ -77,7 +106,7 @@ export default function AdminsTable({ data }) {
         pageSize={pageSize}
         rowsPerPageOptions={[5, 10, 20]}
         onPageSizeChange={(val) => setPageSize(val)}
-        getRowId={(row) => row.uid}
+        getRowId={(row) => row.localId}
         disableColumnFilter
         disableColumnSelector
         disableDensitySelector
@@ -91,6 +120,35 @@ export default function AdminsTable({ data }) {
           },
         }}
       />
+      <Dialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        sx={{
+          zIndex: 10,
+        }}
+      >
+        <DialogTitle id="alert-dialog-title">{dialogData.title}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            {dialogData.message}
+          </DialogContentText>
+
+          <DialogContentText id="alert-dialog-description">
+            name/uid:{" "}
+            <span className="font-semibold">
+              {dialogData.displayName || dialogData.uid}
+            </span>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
+          <Button onClick={dialogData.action} autoFocus>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

@@ -16,7 +16,8 @@ import Progress from "../../../components/loading/Progress";
 import alert from "../../../utils/alert";
 import { useDispatch } from "react-redux";
 import { randomizeUpdateToken } from "../../../store/slices/app";
-import { set } from "firebase/database";
+import { promoteUser } from "../../../firebase/utils";
+import { FaMeteor } from "react-icons/fa";
 
 const UsersModal = lazy(() => import("./UsersModal"));
 
@@ -39,10 +40,27 @@ export default function UsersTable({ data }) {
     setDialogData(data);
   };
 
-  const deleteUser = () => {
+  const handlePromote = (data) => {
+    setDialogOpen(true);
+    setDialogData(data);
+  };
+
+  const promoteUserHandler = (user) => {
+    try {
+      promoteUser(user.localId);
+      dispatch(randomizeUpdateToken());
+      alert.success("User promoted successfully");
+      setDialogOpen(false);
+    } catch (error) {
+      console.log(error);
+      alert.error(error.message);
+    }
+  };
+
+  const deleteUser = (user) => {
     alert.info("Deleting user...");
     const api = import.meta.env.VITE_API;
-    fetch(`${api}/user/${dialogData.uid}`, {
+    fetch(`${api}/user/${user.localId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -127,7 +145,7 @@ export default function UsersTable({ data }) {
     {
       field: "actions",
       headerName: "Actions",
-      width: 150,
+      width: 200,
       renderCell: (params) => {
         return (
           <div className="flex justify-center">
@@ -143,9 +161,32 @@ export default function UsersTable({ data }) {
             <Tooltip arrow title="Delete">
               <button
                 className="bg-red-500 text-white px-2 py-1 rounded-md ml-2 w-12 h-8 flex items-center justify-center"
-                onClick={() => handleDelete(params.row)}
+                onClick={() =>
+                  handleDelete({
+                    ...params.row,
+                    title: "Delete User",
+                    message: "Are you sure you want to delete this user?",
+                    action: () => deleteUser(params.row),
+                  })
+                }
               >
                 <FaTrash />
+              </button>
+            </Tooltip>
+
+            <Tooltip arrow title="Promote as Admin">
+              <button
+                className="bg-green-500 text-white px-2 py-1 rounded-md ml-2 w-12 h-8 flex items-center justify-center"
+                onClick={() =>
+                  handlePromote({
+                    ...params.row,
+                    title: "Promote User",
+                    message: "Promote this user to admin?",
+                    action: () => promoteUserHandler(params.row),
+                  })
+                }
+              >
+                <FaMeteor />
               </button>
             </Tooltip>
           </div>
@@ -201,19 +242,22 @@ export default function UsersTable({ data }) {
           zIndex: 10,
         }}
       >
-        <DialogTitle id="alert-dialog-title">Delete Account</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{dialogData.title}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            You are going to delete account{" "}
-            <span className="font-bold">
+            {dialogData.message}
+          </DialogContentText>
+
+          <DialogContentText id="alert-dialog-description">
+            name/uid:{" "}
+            <span className="font-semibold">
               {dialogData.displayName || dialogData.uid}
             </span>
-            , proceed?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
-          <Button onClick={deleteUser} autoFocus>
+          <Button onClick={dialogData.action} autoFocus>
             Yes
           </Button>
         </DialogActions>

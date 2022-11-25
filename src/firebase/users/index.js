@@ -43,3 +43,15 @@ export const getAdmins = async () => {
 
   return admins;
 };
+
+export const promoteUser = (userId) => {
+  update(ref(db, "/users/" + userId), {
+    role: "admin",
+  });
+};
+
+export const demoteAdmin = (userId) => {
+  update(ref(db, "/users/" + userId), {
+    role: "user",
+  });
+};
