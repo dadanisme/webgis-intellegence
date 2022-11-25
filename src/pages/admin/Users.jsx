@@ -73,7 +73,8 @@ export default function Users() {
         {data?.length > 0 ? (
           <UsersTable
             data={data.filter(
-              (user) => !admins.map((admin) => admin.uid).includes(user.localId)
+              (user) =>
+                !admins?.map((admin) => admin.uid).includes(user.localId)
             )}
           />
         ) : (
