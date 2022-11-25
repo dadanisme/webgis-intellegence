@@ -10,7 +10,14 @@ import {
 import { FcGoogle } from "react-icons/fc";
 import { BsFacebook } from "react-icons/bs";
 import { useState, useRef } from "react";
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+} from "firebase/auth";
+import { setUser, setGoogleToken } from "../../store/slices/user";
+import { useDispatch } from "react-redux";
 import { writeUserData } from "../../firebase/utils";
 import app from "../../firebase";
 import alert from "../../utils/alert";
@@ -18,6 +25,7 @@ import Title from "@/layouts/Title";
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch();
 
   const formRef = useRef(null);
 
@@ -49,6 +57,30 @@ export default function Register() {
           alert.error(errorMessage);
         });
     }
+  };
+
+  const handleGoogleLogin = () => {
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+    provider.addScope("https://www.googleapis.com/auth/contacts.readonly");
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        const user = result.user;
+
+        dispatch(setUser(JSON.parse(JSON.stringify(user))));
+        dispatch(setGoogleToken(token));
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        const email = error.email;
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        console.log(errorCode, errorMessage, email, credential);
+
+        alert.error(errorMessage);
+      });
   };
 
   return (
@@ -193,6 +225,7 @@ export default function Register() {
                 className="bg-[#F6F6F6] hover:bg-slate-100 text-white font-semibold py-3 rounded-md shadow-lg
                 flex items-center justify-center w-full h-[60px]"
                 type="button"
+                onClick={handleGoogleLogin}
               >
                 <FcGoogle className="text-2xl" />
               </button>
