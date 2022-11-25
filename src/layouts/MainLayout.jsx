@@ -26,7 +26,7 @@ export default function MainLayout() {
       <aside
         className={clsx(
           "bg-[#4461F2] z-[1] h-screen w-20 fixed top-0 flex flex-col items-center",
-          "transition-all duration-300 ease-in-out z-[3]",
+          "transition-all duration-300 ease-in-out z-[8]",
           showSidebar ? "left-0" : "-left-20"
         )}
       >
