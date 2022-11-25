@@ -1,14 +1,12 @@
 import clsx from "clsx";
 import { AiOutlineCloseCircle } from "react-icons/ai";
-import { useRef } from "react";
-import { createPackage } from "@/firebase/packages";
-import alert from "@/utils/alert";
-import { getFeatures } from "@/firebase/utils";
-import { useEffect, useState } from "react";
-import { formatter } from "@/utils/formatter";
+import { useRef, useState, useEffect } from "react";
+import { updatePackage, getFeatures } from "@/firebase/utils";
 import Checkbox from "@/components/core/Checkbox";
+import { formatter } from "@/utils/formatter";
+import alert from "@/utils/alert";
 
-export default function AddFeatureModal({ onClose }) {
+export default function EditPackageModal({ data, onClose }) {
   const form = useRef(null);
   const [features, setFeatures] = useState([]);
   const [selectedFeatures, setSelectedFeatures] = useState([]);
@@ -17,6 +15,14 @@ export default function AddFeatureModal({ onClose }) {
   useEffect(() => {
     getFeatures().then((res) => setFeatures(res));
   }, []);
+
+  useEffect(() => {
+    features.forEach((feature) => {
+      if (data.features?.find((item) => item.id === feature.id)) {
+        setSelectedFeatures((prev) => [...prev, feature]);
+      }
+    });
+  }, [features]);
 
   useEffect(() => {
     if (!selectedFeatures) {
@@ -29,13 +35,12 @@ export default function AddFeatureModal({ onClose }) {
     );
     setPrice(total);
   }, [selectedFeatures]);
-
   const handleChange = (e) => {
     const { id, checked } = e.target;
 
     setSelectedFeatures((prev) => {
-      const isExist = prev.find((item) => item.id === id);
-      const feature = features.find((item) => item.id === id);
+      const isExist = prev?.find((item) => item.id === id);
+      const feature = features?.find((item) => item.id === id);
       if (checked && !isExist) {
         return [...prev, feature];
       } else if (!checked && isExist) {
@@ -54,7 +59,7 @@ export default function AddFeatureModal({ onClose }) {
     const name = inputs[0].value;
     const description = inputs[1].value;
 
-    const data = {
+    const newData = {
       name,
       description,
       features: selectedFeatures,
@@ -62,15 +67,14 @@ export default function AddFeatureModal({ onClose }) {
     };
 
     try {
-      createPackage(data);
-      alert.success("Package created successfully");
+      updatePackage(data.id, newData);
+      alert.success("Package updated!");
       onClose();
     } catch (err) {
       consoe.log(err);
-      alert.error("Failed to create package");
+      alert.error("Failed to update package");
     }
   };
-
   return (
     <div
       className="w-full md:w-3/5 md:h-96 bg-white fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 
@@ -78,7 +82,7 @@ export default function AddFeatureModal({ onClose }) {
     >
       <header className="w-full">
         <div className="flex justify-between items-center p-4">
-          <h2 className="text-xl font-semibold">Add Package</h2>
+          <h2 className="text-xl font-semibold">Edit Package</h2>
           <button
             className="text-red-500 hover:text-red-600"
             onClick={() => onClose()}
@@ -109,6 +113,7 @@ export default function AddFeatureModal({ onClose }) {
                 type="text"
                 name="name"
                 required
+                defaultValue={data?.name}
               />
             </div>
 
@@ -128,6 +133,7 @@ export default function AddFeatureModal({ onClose }) {
                 type="text"
                 name="description"
                 required
+                defaultValue={data?.description}
               />
             </div>
 
@@ -135,15 +141,24 @@ export default function AddFeatureModal({ onClose }) {
               <label className="font-semibold text-gray-500">
                 Features list
               </label>
-              {features?.map((feature, index) => (
-                <Checkbox
-                  key={index}
-                  id={feature.id}
-                  name={feature.name}
-                  description={feature.description}
-                  onChange={handleChange}
-                />
-              ))}
+              {features?.map((feature, index) => {
+                const isChecked = selectedFeatures?.find(
+                  (item) => item.id === feature.id
+                )
+                  ? true
+                  : false;
+
+                return (
+                  <Checkbox
+                    key={index}
+                    id={feature.id}
+                    name={feature.name}
+                    description={feature.description}
+                    onChange={handleChange}
+                    checked={isChecked}
+                  />
+                );
+              })}
             </div>
 
             <div>

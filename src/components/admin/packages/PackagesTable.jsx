@@ -1,18 +1,49 @@
 import { useRealTimePackages } from "@/hooks";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { Tooltip } from "@mui/material";
+import { Tooltip, Modal } from "@mui/material";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { formatter } from "@/utils/formatter";
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
+import Dialog from "@/components/core/Dialog";
+import { deletePackage } from "@/firebase/utils";
+import alert from "@/utils/alert";
+import Progress from "@/components/loading/Progress";
+
+const EditPackageModal = lazy(() => import("./modals/EditPackageModal"));
 
 export default function PackagesTable() {
   const packages = useRealTimePackages();
   const [pageSize, setPageSize] = useState(10);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogData, setDialogData] = useState({});
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalData, setModalData] = useState({});
 
   const data = Object.keys(packages).map((key) => ({
     id: key,
     ...packages[key],
   }));
+
+  const handleEdit = (data) => {
+    setModalOpen(true);
+    setModalData(data);
+  };
+
+  const handleDelete = (data) => {
+    setDialogOpen(true);
+    setDialogData(data);
+  };
+
+  const deleteHandler = (data) => {
+    try {
+      deletePackage(data.id);
+      alert.success("Package deleted successfully");
+      setDialogOpen(false);
+    } catch (err) {
+      alert.error("Error deleting package");
+      console.log(err);
+    }
+  };
 
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
@@ -117,6 +148,39 @@ export default function PackagesTable() {
           }
         }}
       />
+
+      <Dialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        title="Delete package"
+        content={
+          <div>
+            <p>
+              Delete package{" "}
+              <span className="font-semibold">{dialogData.name}</span>? This is
+              irreversible!
+            </p>
+          </div>
+        }
+        confirmAction={() => deleteHandler(dialogData)}
+      />
+
+      <Modal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        timeout={500}
+        closeAfterTransition
+        sx={{
+          zIndex: 10,
+        }}
+      >
+        <Suspense fallback={<Progress />}>
+          <EditPackageModal
+            data={modalData}
+            onClose={() => setModalOpen(false)}
+          />
+        </Suspense>
+      </Modal>
     </div>
   );
 }
